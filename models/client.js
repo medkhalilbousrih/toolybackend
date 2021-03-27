@@ -5,11 +5,11 @@ const clientSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: "name required",
+      required: "firstname required",
     },
     lastName: {
       type: String,
-      required: "name required",
+      required: "lastname required",
     },
     rented: [
       {
@@ -36,5 +36,6 @@ const clientSchema = new mongoose.Schema(
 );
 
 clientSchema.plugin(uniqueValidator);
+
 const Client = mongoose.model("Client", clientSchema);
 module.exports = Client;

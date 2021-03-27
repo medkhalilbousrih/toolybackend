@@ -3,10 +3,6 @@ var uniqueValidator = require("mongoose-unique-validator");
 
 const supplierSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: "name required",
-    },
     tools: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,5 +30,4 @@ const supplierSchema = new mongoose.Schema(
 supplierSchema.plugin(uniqueValidator);
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
-
 module.exports = Supplier;

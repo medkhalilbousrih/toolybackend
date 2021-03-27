@@ -12,6 +12,12 @@ const accountSchema = new mongoose.Schema(
         "invalid email address",
       ],
     },
+    username: {
+      type: String,
+      required: "username required",
+      unique: "username exists",
+      minlength: 3,
+    },
     passwordHash: {
       type: String,
     },
@@ -45,5 +51,6 @@ const accountSchema = new mongoose.Schema(
   }
 );
 accountSchema.plugin(uniqueValidator);
+
 const Account = mongoose.model("Account", accountSchema);
 module.exports = Account;
