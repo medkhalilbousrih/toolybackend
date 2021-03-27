@@ -7,18 +7,22 @@ const bcrypt = require("bcrypt");
 accountRouter.post("/", async (req, res, next) => {
   try {
     const data = req.body;
+
     if (!data || data.password.length < 7) {
       return res.status(403).send("password is too short");
     }
+    if (data.role !== "supplier" || data.role !== "client") {
+      return res.status(401).send("invalid role");
+    }
+
     const passwordHash = await bcrypt.hash(req.body.password, 10);
     const account = await new Account({
       email: data.email,
-      type: data.type,
+      role: data.role,
       phoneNumber: data.phoneNumber,
       passwordHash,
     });
-
-    if (data.type === "client") {
+    if (data.role === "client") {
       const client = await new Client({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -32,8 +36,7 @@ accountRouter.post("/", async (req, res, next) => {
         "_client"
       );
       res.status(201).json(returnedData);
-    }
-    if (data.type === "supplier") {
+    } else if (data.role === "supplier") {
       const supplier = await new Supplier({
         name: data.name,
         _account: account._id,

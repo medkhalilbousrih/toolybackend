@@ -19,9 +19,9 @@ const accountSchema = new mongoose.Schema(
       type: String,
       required: "phone number required",
     },
-    type: {
-      required: "no user type",
+    role: {
       type: String,
+      required: "no user role",
       enum: ["client", "supplier"],
     },
     _client: {
