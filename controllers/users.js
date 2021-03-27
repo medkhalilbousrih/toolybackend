@@ -1,24 +1,55 @@
-const User = require("../models/account");
-const userRouter = require("express").Router();
+const Account = require("../models/account");
+const Supplier = require("../models/supplier");
+const Client = require("../models/client");
+const accountRouter = require("express").Router();
 const bcrypt = require("bcrypt");
 
-userRouter.post("/", async (req, res) => {
+accountRouter.post("/", async (req, res, next) => {
   try {
     const data = req.body;
-    if (req.body.password.length < 7) {
+    if (!data || data.password.length < 7) {
       return res.status(403).send("password is too short");
     }
     const passwordHash = await bcrypt.hash(req.body.password, 10);
-    const user = await new User({
+    const account = await new Account({
       email: data.email,
       type: data.type,
+      phoneNumber: data.phoneNumber,
       passwordHash,
     });
-    const createdUser = await user.save();
-    res.status(201).json(createdUser);
+
+    if (data.type === "client") {
+      const client = await new Client({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        _account: account._id,
+      });
+      await client.save();
+      account._client = client._id;
+
+      const createdAccount = await account.save();
+      const returnedData = await Account.findById(createdAccount._id).populate(
+        "_client"
+      );
+      res.status(201).json(returnedData);
+    }
+    if (data.type === "supplier") {
+      const supplier = await new Supplier({
+        name: data.name,
+        _account: account._id,
+      });
+      await supplier.save();
+      account._supplier = supplier._id;
+
+      const createdAccount = await account.save();
+      const returnedData = await Account.findById(createdAccount._id).populate(
+        "_supplier"
+      );
+      res.status(201).json(returnedData);
+    }
   } catch (exception) {
-    res.status(500).send(exception.message);
+    next(exception);
   }
 });
 
-module.exports = userRouter;
+module.exports = accountRouter;

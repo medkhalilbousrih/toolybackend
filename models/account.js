@@ -15,10 +15,22 @@ const accountSchema = new mongoose.Schema(
     passwordHash: {
       type: String,
     },
+    phoneNumber: {
+      type: String,
+      required: "phone number required",
+    },
     type: {
       required: "no user type",
       type: String,
       enum: ["client", "supplier"],
+    },
+    _client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+    },
+    _supplier: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Supplier",
     },
   },
   {
@@ -33,5 +45,5 @@ const accountSchema = new mongoose.Schema(
   }
 );
 accountSchema.plugin(uniqueValidator);
-
-module.exports = mongoose.model("account", accountSchema);
+const Account = mongoose.model("Account", accountSchema);
+module.exports = Account;
