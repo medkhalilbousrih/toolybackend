@@ -3,7 +3,9 @@ const app = express();
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const userRouter = require("./controllers/users");
+const loginRouter = require("./controllers/login");
 const middleware = require("./utils/middleware");
+const toolRouter = require("./controllers/tools");
 
 app.use(express.json());
 app.use(morgan("tiny"));
@@ -19,6 +21,8 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/users", userRouter);
+app.use("/login", loginRouter);
+app.use("/tools", toolRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

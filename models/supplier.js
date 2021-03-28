@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-var uniqueValidator = require("mongoose-unique-validator");
+const uniqueValidator = require("mongoose-unique-validator");
 
 const supplierSchema = new mongoose.Schema(
   {
@@ -21,7 +21,6 @@ const supplierSchema = new mongoose.Schema(
         newObj.id = obj._id;
         delete newObj._id;
         delete newObj.__v;
-        delete newObj.passwordHash;
       },
     },
   }
