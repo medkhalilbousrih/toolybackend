@@ -29,11 +29,47 @@ toolRouter.get("/", async (req, res, next) => {
   try {
     const tools = await Tool.find({}).populate("_supplier", {
       _id: 0,
+      tools: 0,
     });
     res.json(tools);
   } catch (exception) {
     next(exception);
   }
 });
+
+toolRouter.put(
+  "/rent/:id",
+  middleware.userExtractor,
+  async (req, res, next) => {
+    try {
+      if (!req.loggedUser || req.loggedUser.role !== "client") {
+        return res.status(401).end();
+      }
+      const data = req.body;
+      const rentedTool = await Tool.findById(req.params.id);
+      if (rentedTool.state !== "available") {
+        return res.status(401).end();
+      }
+      rentedTool.state = "rented";
+
+      //fixing date offset
+      const dateFrom = new Date();
+      dateFrom.setHours(dateFrom.getHours() + 1);
+
+      const dateTo = new Date(data.to);
+      dateTo.setHours(dateTo.getHours() + 2);
+
+      rentedTool.rentDetails = {
+        from: dateFrom,
+        to: dateTo,
+        client: req.loggedUser._id,
+      };
+      await rentedTool.save();
+      res.json(rentedTool);
+    } catch (exception) {
+      next(exception);
+    }
+  }
+);
 
 module.exports = toolRouter;

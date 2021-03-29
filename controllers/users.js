@@ -1,10 +1,10 @@
 const Account = require("../models/account");
 const Supplier = require("../models/supplier");
 const Client = require("../models/client");
-const accountRouter = require("express").Router();
+const userRouter = require("express").Router();
 const bcrypt = require("bcrypt");
 
-accountRouter.post("/", async (req, res, next) => {
+userRouter.post("/", async (req, res, next) => {
   try {
     const data = req.body;
     //checking password length
@@ -44,4 +44,9 @@ accountRouter.post("/", async (req, res, next) => {
   }
 });
 
-module.exports = accountRouter;
+userRouter.get("/", async (req, res) => {
+  const userList = await Account.find({}).populate("_client _supplier");
+  res.json(userList);
+});
+
+module.exports = userRouter;

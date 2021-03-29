@@ -20,9 +20,9 @@ mongoose
   .then((res) => console.log("connected to database"))
   .catch((err) => console.log(err));
 
-app.use("/users", userRouter);
-app.use("/login", loginRouter);
-app.use("/tools", toolRouter);
+app.use("/api/users", userRouter);
+app.use("/api/login", loginRouter);
+app.use("/api/tools", toolRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
