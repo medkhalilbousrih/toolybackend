@@ -7,6 +7,8 @@ const loginRouter = require("./controllers/login");
 const middleware = require("./utils/middleware");
 const toolRouter = require("./controllers/tools");
 
+app.use(express.static("build"));
+
 app.use(express.json());
 app.use(morgan("tiny"));
 

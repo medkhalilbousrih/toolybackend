@@ -2,28 +2,35 @@ const toolRouter = require("express").Router();
 const middleware = require("../utils/middleware");
 const Tool = require("../models/tool");
 const Supplier = require("../models/supplier");
+const upload = require("../utils/image-upload");
 
-toolRouter.post("/", middleware.userExtractor, async (req, res, next) => {
-  try {
-    if (!req.loggedUser || req.loggedUser.role !== "supplier") {
-      return res.status(401).end();
+toolRouter.post(
+  "/",
+  [upload.single("toolImage"), middleware.userExtractor],
+  async (req, res, next) => {
+    try {
+      if (!req.loggedUser || req.loggedUser.role !== "supplier") {
+        return res.status(401).end();
+      }
+      console.log(req.file);
+      const loggedSupplier = await Supplier.findById(req.loggedUser._supplier);
+      const tool = new Tool({
+        ...req.body,
+        imageUrls: "/uploads/" + req.file.filename,
+        state: "available",
+        _supplier: loggedSupplier._id,
+      });
+      const createdTool = await tool.save();
+      res.status(201).json(createdTool);
+
+      //adding tool to supplier list
+      loggedSupplier.tools = loggedSupplier.tools.concat(createdTool._id);
+      await loggedSupplier.save();
+    } catch (exception) {
+      next(exception);
     }
-    const loggedSupplier = await Supplier.findById(req.loggedUser._supplier);
-
-    const tool = new Tool({
-      ...req.body,
-      _supplier: loggedSupplier._id,
-    });
-    const createdTool = await tool.save();
-    res.status(201).json(createdTool);
-
-    //adding tool to supplier list
-    loggedSupplier.tools = loggedSupplier.tools.concat(createdTool._id);
-    await loggedSupplier.save();
-  } catch (exception) {
-    next(exception);
   }
-});
+);
 
 toolRouter.get("/", async (req, res, next) => {
   try {
@@ -45,11 +52,14 @@ toolRouter.put(
       if (!req.loggedUser || req.loggedUser.role !== "client") {
         return res.status(401).end();
       }
+
       const data = req.body;
       const rentedTool = await Tool.findById(req.params.id);
+
       if (rentedTool.state !== "available") {
         return res.status(401).end();
       }
+
       rentedTool.state = "rented";
 
       //fixing date offset
@@ -64,6 +74,7 @@ toolRouter.put(
         to: dateTo,
         client: req.loggedUser._id,
       };
+
       await rentedTool.save();
       res.json(rentedTool);
     } catch (exception) {
