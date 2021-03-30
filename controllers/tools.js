@@ -3,6 +3,7 @@ const middleware = require("../utils/middleware");
 const Tool = require("../models/tool");
 const Supplier = require("../models/supplier");
 const upload = require("../utils/image-upload");
+const Client = require("../models/client");
 
 toolRouter.post(
   "/",
@@ -16,7 +17,7 @@ toolRouter.post(
       const loggedSupplier = await Supplier.findById(req.loggedUser._supplier);
       const tool = new Tool({
         ...req.body,
-        imageUrls: "/uploads/" + req.file.filename,
+        imageUrl: `/uploads/${req.file.filename}`,
         state: "available",
         _supplier: loggedSupplier._id,
       });
@@ -44,6 +45,18 @@ toolRouter.get("/", async (req, res, next) => {
   }
 });
 
+toolRouter.get("/:id", async (req, res, next) => {
+  try {
+    const tool = await Tool.findById(req.params.id).populate("_supplier", {
+      _id: 0,
+      tools: 0,
+    });
+    res.json(tool);
+  } catch (exception) {
+    next(exception);
+  }
+});
+
 toolRouter.put(
   "/rent/:id",
   middleware.userExtractor,
@@ -55,6 +68,7 @@ toolRouter.put(
 
       const data = req.body;
       const rentedTool = await Tool.findById(req.params.id);
+      const client = await Client.findById(req.loggedUser._client);
 
       if (rentedTool.state !== "available") {
         return res.status(401).end();
@@ -72,11 +86,14 @@ toolRouter.put(
       rentedTool.rentDetails = {
         from: dateFrom,
         to: dateTo,
-        client: req.loggedUser._id,
+        client: client._id,
       };
 
       await rentedTool.save();
       res.json(rentedTool);
+
+      client.rented = client.rented.concat(rentedTool._id);
+      await client.save();
     } catch (exception) {
       next(exception);
     }
