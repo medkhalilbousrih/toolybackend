@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
-const accountSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -17,6 +17,7 @@ const accountSchema = new mongoose.Schema(
       required: "username required",
       unique: "username exists",
       minlength: 3,
+      trim: true,
     },
     passwordHash: {
       type: String,
@@ -24,20 +25,38 @@ const accountSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       required: "phone number required",
+      trim: true,
     },
     role: {
       type: String,
       required: "no user role",
       enum: ["client", "supplier"],
     },
-    _client: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Client",
+    imageUrl: {
+      type: String,
+      default: "/uploads/avatar.png",
     },
-    _supplier: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Supplier",
+    firstName: {
+      type: String,
+      trim: true,
     },
+    lastName: {
+      type: String,
+      trim: true,
+    },
+    tools: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tool",
+      },
+    ],
+    rented: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tool",
+      },
+    ],
+    history: [{}],
   },
   {
     toJSON: {
@@ -50,7 +69,7 @@ const accountSchema = new mongoose.Schema(
     },
   }
 );
-accountSchema.plugin(uniqueValidator);
+userSchema.plugin(uniqueValidator);
 
-const Account = mongoose.model("Account", accountSchema);
-module.exports = Account;
+const User = mongoose.model("User", userSchema);
+module.exports = User;

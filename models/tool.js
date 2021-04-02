@@ -6,14 +6,17 @@ const toolSchema = new mongoose.Schema(
     name: {
       type: String,
       required: "tool name required",
+      trim: true,
     },
     category: {
       type: String,
       required: "category required",
+      trim: true,
     },
     brand: {
       type: String,
-      required: "category required",
+      required: "brand required",
+      trim: true,
     },
     price: {
       type: Number,
@@ -28,15 +31,17 @@ const toolSchema = new mongoose.Schema(
       type: String,
       required: "description",
       minlength: 10,
+      trim: true,
     },
-    _supplier: {
+    supplier: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Supplier",
+      ref: "User",
     },
-    imageUrl: {
-      type: String,
-    },
-
+    imageUrls: [
+      {
+        type: String,
+      },
+    ],
     rentDetails: {
       from: {
         type: Date,
@@ -46,7 +51,7 @@ const toolSchema = new mongoose.Schema(
       },
       client: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Client",
+        ref: "User",
       },
     },
   },

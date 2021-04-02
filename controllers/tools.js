@@ -1,32 +1,34 @@
 const toolRouter = require("express").Router();
 const middleware = require("../utils/middleware");
 const Tool = require("../models/tool");
-const Supplier = require("../models/supplier");
 const upload = require("../utils/image-upload");
-const Client = require("../models/client");
 
 toolRouter.post(
   "/",
-  [upload.single("toolImage"), middleware.userExtractor],
+  [upload.array("toolImages", 5), middleware.userExtractor],
   async (req, res, next) => {
     try {
-      if (!req.loggedUser || req.loggedUser.role !== "supplier") {
-        return res.status(401).end();
+      if (req.loggedUser.role === "supplier") {
+        const data = req.body;
+        const urls = req.files.map((f) => `/uploads/${f.filename}`);
+        const user = req.loggedUser;
+        const tool = new Tool({
+          name: data.name,
+          category: data.category,
+          brand: data.brand,
+          price: data.price,
+          state: "available",
+          description: data.description,
+          supplier: user._id,
+          imageUrls: urls,
+        });
+        const createdTool = await tool.save();
+        user.tools = user.tools.concat(tool._id);
+        user.save();
+        res.status(201).json(createdTool);
+      } else {
+        res.status(401).end();
       }
-      console.log(req.file);
-      const loggedSupplier = await Supplier.findById(req.loggedUser._supplier);
-      const tool = new Tool({
-        ...req.body,
-        imageUrl: `/uploads/${req.file.filename}`,
-        state: "available",
-        _supplier: loggedSupplier._id,
-      });
-      const createdTool = await tool.save();
-      res.status(201).json(createdTool);
-
-      //adding tool to supplier list
-      loggedSupplier.tools = loggedSupplier.tools.concat(createdTool._id);
-      await loggedSupplier.save();
     } catch (exception) {
       next(exception);
     }
@@ -35,10 +37,11 @@ toolRouter.post(
 
 toolRouter.get("/", async (req, res, next) => {
   try {
-    const tools = await Tool.find({}).populate("_supplier", {
-      _id: 0,
-      tools: 0,
-    });
+    if (!req.query.category) {
+      const tools = await Tool.find({});
+      return res.json(tools);
+    }
+    const tools = await Tool.find({ category: req.query.category });
     res.json(tools);
   } catch (exception) {
     next(exception);
@@ -47,10 +50,7 @@ toolRouter.get("/", async (req, res, next) => {
 
 toolRouter.get("/:id", async (req, res, next) => {
   try {
-    const tool = await Tool.findById(req.params.id).populate("_supplier", {
-      _id: 0,
-      tools: 0,
-    });
+    const tool = await Tool.findById(req.params.id);
     res.json(tool);
   } catch (exception) {
     next(exception);
@@ -65,7 +65,6 @@ toolRouter.put(
       if (!req.loggedUser || req.loggedUser.role !== "client") {
         return res.status(401).end();
       }
-
       const data = req.body;
       const rentedTool = await Tool.findById(req.params.id);
       const client = await Client.findById(req.loggedUser._client);

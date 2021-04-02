@@ -1,4 +1,4 @@
-const Account = require("../models/account");
+const Account = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const errorHandler = (err, req, res, next) => {
