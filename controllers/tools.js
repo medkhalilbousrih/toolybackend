@@ -57,46 +57,24 @@ toolRouter.get("/:id", async (req, res, next) => {
   }
 });
 
-toolRouter.put(
-  "/rent/:id",
-  middleware.userExtractor,
-  async (req, res, next) => {
-    try {
-      if (!req.loggedUser || req.loggedUser.role !== "client") {
-        return res.status(401).end();
-      }
-      const data = req.body;
-      const rentedTool = await Tool.findById(req.params.id);
-      const client = await Client.findById(req.loggedUser._client);
-
-      if (rentedTool.state !== "available") {
-        return res.status(401).end();
-      }
-
-      rentedTool.state = "rented";
-
-      //fixing date offset
-      const dateFrom = new Date();
-      dateFrom.setHours(dateFrom.getHours() + 1);
-
-      const dateTo = new Date(data.to);
-      dateTo.setHours(dateTo.getHours() + 2);
-
-      rentedTool.rentDetails = {
-        from: dateFrom,
-        to: dateTo,
-        client: client._id,
-      };
-
-      await rentedTool.save();
-      res.json(rentedTool);
-
-      client.rented = client.rented.concat(rentedTool._id);
-      await client.save();
-    } catch (exception) {
-      next(exception);
+toolRouter.put("/rent", async (req, res, next) => {
+  try {
+    const toolList = req.body;
+    for (tool of toolList) {
+      await Tool.findByIdAndUpdate(tool.id, {
+        $set: {
+          state: "rented",
+          rentDetails: {
+            from: tool.from,
+            to: tool.to,
+            client: req.loggedUser._id,
+          },
+        },
+      });
     }
+  } catch (exception) {
+    next(exception);
   }
-);
+});
 
 module.exports = toolRouter;
