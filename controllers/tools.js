@@ -59,21 +59,31 @@ toolRouter.get("/:id", async (req, res, next) => {
 
 toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
   try {
-    const toolList = req.body;
-    console.log(new Date());
-    for (tool of toolList) {
-      await Tool.findByIdAndUpdate(tool.id, {
-        $set: {
-          state: "rented",
-          rentDetails: {
-            from: new Date(tool.from),
-            to: new Date(tool.to),
-            client: req.loggedUser._id,
-          },
-        },
-      });
+    if (req.loggedUser !== "supplier") {
+      return res.status(401).send("needs to be a client");
     }
-    res.send("tools rented successfully");
+    const toolsToRent = req.body;
+    const ids = toolsToRent.map((t) => t.id);
+    const toolList = await Tool.find({ _id: { $in: ids } });
+    const invalid = toolList.map((tool) => tool.state).includes("rented");
+
+    if (!invalid) {
+      for (tool of toolList) {
+        await Tool.findByIdAndUpdate(tool.id, {
+          $set: {
+            state: "rented",
+            rentDetails: {
+              from: new Date(),
+              to: tool.to,
+              client: req.loggedUser._id,
+            },
+          },
+        });
+      }
+      res.status(401).send("tools rented successfully");
+    } else {
+      res.send("some tools are unavailable");
+    }
   } catch (exception) {
     next(exception);
   }

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const Category = require("./category");
 
 const toolSchema = new mongoose.Schema(
   {
@@ -11,7 +12,15 @@ const toolSchema = new mongoose.Schema(
     category: {
       type: String,
       required: "category required",
+      enum: [],
       trim: true,
+      validate: function (nameVal) {
+        return new Promise(function (resolve, reject) {
+          Category.findOne({ name: nameVal }, (err, cat) =>
+            resolve(cat ? true : false)
+          );
+        });
+      },
     },
     brand: {
       type: String,
