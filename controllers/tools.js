@@ -57,21 +57,23 @@ toolRouter.get("/:id", async (req, res, next) => {
   }
 });
 
-toolRouter.put("/rent", async (req, res, next) => {
+toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
   try {
     const toolList = req.body;
+    console.log(new Date());
     for (tool of toolList) {
       await Tool.findByIdAndUpdate(tool.id, {
         $set: {
           state: "rented",
           rentDetails: {
-            from: tool.from,
-            to: tool.to,
+            from: new Date(tool.from),
+            to: new Date(tool.to),
             client: req.loggedUser._id,
           },
         },
       });
     }
+    res.send("tools rented successfully");
   } catch (exception) {
     next(exception);
   }
