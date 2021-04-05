@@ -12,9 +12,10 @@ const toolSchema = new mongoose.Schema(
     category: {
       type: String,
       required: "category required",
-      enum: [],
+      
       trim: true,
       validate: function (nameVal) {
+        //to check that it exist in category : validate gonan take a promise to find the catergory true ken shih sinon false
         return new Promise(function (resolve, reject) {
           Category.findOne({ name: nameVal }, (err, cat) =>
             resolve(cat ? true : false)

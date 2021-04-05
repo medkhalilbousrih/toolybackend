@@ -18,6 +18,8 @@ loginRouter.post("/", async (req, res, next) => {
       id: user._id,
       username: user.username,
     };
+    //Secret to verify if the token got modified or not 
+    //=> go to middleware now
     const genToken = jwt.sign(tokenData, process.env.SECRET);
     res.json({ username: user.username, role: user.role, token: genToken });
   } catch (exception) {

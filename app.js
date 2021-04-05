@@ -22,6 +22,8 @@ mongoose
   .then((res) => console.log("connected to database"))
   .catch((err) => console.log(err));
 
+//el routage metna
+
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/tools", toolRouter);

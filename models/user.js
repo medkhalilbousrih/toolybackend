@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
+//uniqueValidator add unique validation to the schema , unique input
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -59,6 +61,7 @@ const userSchema = new mongoose.Schema(
     history: [{}],
   },
   {
+    //toJSON for the fron to decide what to return and what not; not returning the password, and the v of mongoose
     toJSON: {
       transform: (obj, newObj) => {
         newObj.id = obj._id;
@@ -71,5 +74,6 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.plugin(uniqueValidator);
 
+//Pointing on user if there is, if not creating new user 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
