@@ -59,7 +59,7 @@ toolRouter.get("/:id", async (req, res, next) => {
 
 toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
   try {
-    if (req.loggedUser !== "supplier") {
+    if (req.loggedUser !== "client") {
       return res.status(401).send("needs to be a client");
     }
     const toolsToRent = req.body;
@@ -68,7 +68,7 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
     const invalid = toolList.map((tool) => tool.state).includes("rented");
 
     if (!invalid) {
-      for (tool of toolList) {
+      for (let tool of toolList) {
         await Tool.findByIdAndUpdate(tool.id, {
           $set: {
             state: "rented",

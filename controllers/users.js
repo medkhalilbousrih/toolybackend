@@ -36,19 +36,14 @@ userRouter.post("/", async (req, res, next) => {
   }
 });
 
-userRouter.get("/", async (req, res) => {
-  try {
-    const userList = await User.find({});
-    res.json(userList);
-  } catch (exception) {
-    next(exception);
-  }
-});
-
 userRouter.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    res.json(user);
+    if (user.role !== "admin") {
+      const user = await User.findById(req.params.id).populate("tools rented");
+      res.json(user);
+    } else {
+      res.status(401).end();
+    }
   } catch (exception) {
     next(exception);
   }
