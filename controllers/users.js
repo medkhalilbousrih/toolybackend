@@ -19,7 +19,7 @@ userRouter.post("/", async (req, res, next) => {
         .status(400)
         .send("password and password verification dont match");
     }
-    //password hashing
+    //password hashing with bycript / await asynchrone
     const passwordHash = await bcrypt.hash(data.password, 10);
     const user = new User({
       email: data.email,
@@ -55,6 +55,7 @@ userRouter.put(
   "/",
   middleware.userExtractor,
   upload.single("imageUrl"),
+  //go to image upload file
   async (req, res, next) => {
     try {
       const data = req.body;
@@ -70,6 +71,7 @@ userRouter.put(
       user.imageUrl = imgUrl;
       user.firstName = data.firstName || user.firstName;
       user.lastName = data.lastName || user.lastName;
+
 
       const updatedUser = await user.save();
       res.json(updatedUser);
