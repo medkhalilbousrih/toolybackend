@@ -63,6 +63,7 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
       return res.status(401).send("needs to be a client");
     }
     const toolsToRent = req.body;
+    //map transforom array
     const ids = toolsToRent.map((t) => t.id);
     const toolList = await Tool.find({ _id: { $in: ids } });
     const invalid = toolList.map((tool) => tool.state).includes("rented");
@@ -85,6 +86,7 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
       res.send("some tools are unavailable");
     }
   } catch (exception) {
+    //in the middleware we have error handleer
     next(exception);
   }
 });
