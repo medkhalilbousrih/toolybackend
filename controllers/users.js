@@ -9,6 +9,9 @@ userRouter.post("/", async (req, res, next) => {
   try {
     const data = req.body;
     //checking password length
+    if (data.role === "admin") {
+      return res.status(401).end();
+    }
     if (!data.password || data.password.length < 7) {
       return res.status(400).send("password is too short");
     } else if (data.password !== data.passwordVerification) {
@@ -23,12 +26,11 @@ userRouter.post("/", async (req, res, next) => {
       username: data.username,
       role: data.role,
       phoneNumber: data.phoneNumber,
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
       passwordHash,
     });
-    if (data.role === "client") {
-      user.firstName = data.firstName || "";
-      user.lastName = data.lastName || "";
-    }
+
     const createdUser = await user.save();
     res.status(201).json(createdUser);
   } catch (exception) {
@@ -38,8 +40,8 @@ userRouter.post("/", async (req, res, next) => {
 
 userRouter.get("/:id", async (req, res) => {
   try {
+    const user = await User.findById(req.params.id).populate("tools rented");
     if (user.role !== "admin") {
-      const user = await User.findById(req.params.id).populate("tools rented");
       res.json(user);
     } else {
       res.status(401).end();
@@ -57,16 +59,18 @@ userRouter.put(
     try {
       const data = req.body;
       const user = req.loggedUser;
+
       const imgUrl = req.file ? `/uploads/${req.file.filename}` : user.imageUrl;
+
       if (req.file && user.imageUrl !== "/uploads/avatar.png") {
         fs.unlinkSync(`build${user.imageUrl}`);
       }
+
       user.phoneNumber = data.phoneNumber || user.phoneNumber;
       user.imageUrl = imgUrl;
-      if (user.role === "client") {
-        user.firstName = data.firstName || "";
-        user.lastName = data.lastName || "";
-      }
+      user.firstName = data.firstName || user.firstName;
+      user.lastName = data.lastName || user.lastName;
+
       const updatedUser = await user.save();
       res.json(updatedUser);
     } catch (exception) {

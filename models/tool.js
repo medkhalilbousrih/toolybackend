@@ -12,7 +12,6 @@ const toolSchema = new mongoose.Schema(
     category: {
       type: String,
       required: "category required",
-      enum: [],
       trim: true,
       validate: function (nameVal) {
         return new Promise(function (resolve, reject) {
