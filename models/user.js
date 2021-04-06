@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
+      required: true,
     },
     phoneNumber: {
       type: String,
@@ -74,6 +75,6 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.plugin(uniqueValidator);
 
-//Pointing on user if there is, if not creating new user 
+//Pointing on user if there is, if not creating new user
 const User = mongoose.model("User", userSchema);
 module.exports = User;

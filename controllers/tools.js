@@ -59,7 +59,7 @@ toolRouter.get("/:id", async (req, res, next) => {
 
 toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
   try {
-    if (req.loggedUser !== "client") {
+    if (req.loggedUser.role !== "client") {
       return res.status(401).send("needs to be a client");
     }
     const toolsToRent = req.body;
@@ -75,7 +75,9 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
             state: "rented",
             rentDetails: {
               from: new Date(),
-              to: tool.to,
+              to: toolsToRent.find(
+                (t) => t.id.toString() === tool._id.toString()
+              ).to,
               client: req.loggedUser._id,
             },
           },
