@@ -72,7 +72,6 @@ userRouter.put(
       user.firstName = data.firstName || user.firstName;
       user.lastName = data.lastName || user.lastName;
 
-
       const updatedUser = await user.save();
       res.json(updatedUser);
     } catch (exception) {
