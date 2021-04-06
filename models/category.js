@@ -22,7 +22,6 @@ const categorySchema = new mongoose.Schema(
         newObj.id = obj._id;
         delete newObj._id;
         delete newObj.__v;
-        
       },
     },
   }

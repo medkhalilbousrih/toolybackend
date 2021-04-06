@@ -12,7 +12,6 @@ const toolSchema = new mongoose.Schema(
     category: {
       type: String,
       required: "category required",
-      
       trim: true,
       validate: function (nameVal) {
         //to check that it exist in category : validate gonan take a promise to find the catergory true ken shih sinon false
