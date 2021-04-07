@@ -59,8 +59,13 @@ toolRouter.get("/", async (req, res, next) => {
 
 toolRouter.delete("/:id", async (req, res, next) => {
   try {
-    await Tool.findByIdAndRemove(req.params.id);
-    res.status(204).end();
+    const tool = await Tool.findById(req.params.id);
+    if (tool.supplier.toString() === req.loggedUser._id.toString()) {
+      await tool.remove();
+      res.status(204).end();
+    } else {
+      res.status(401).end();
+    }
   } catch (exception) {
     next(exception);
   }
