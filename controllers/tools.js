@@ -57,7 +57,7 @@ toolRouter.get("/", async (req, res, next) => {
   }
 });
 
-toolRouter.delete("/:id", async (req, res, next) => {
+toolRouter.delete("/:id", middleware.userExtractor, async (req, res, next) => {
   try {
     const tool = await Tool.findById(req.params.id);
     if (tool.supplier.toString() === req.loggedUser._id.toString()) {
