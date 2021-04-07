@@ -2,6 +2,7 @@ const Category = require("../models/category");
 const adminRouter = require("express").Router();
 const middleware = require("../utils/middleware");
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 adminRouter.post("/category", middleware.userExtractor, async (req, res) => {
   if (req.loggedUser.role === "admin") {
@@ -19,7 +20,16 @@ adminRouter.post("/", middleware.userExtractor, async (req, res, next) => {
   try {
     if (req.loggedUser.role === "admin") {
       const data = req.body;
-      const admin = new User(data);
+      const passwordHash = await bcrypt.hash(data.password, 10);
+      const admin = new User({
+        email: data.email,
+        username: data.username,
+        role: "admin",
+        phoneNumber: data.phoneNumber,
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        passwordHash,
+      });
       const createdAdmin = await admin.save();
       res.status(201).json(createdAdmin);
     }

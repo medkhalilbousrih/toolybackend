@@ -13,13 +13,13 @@ const toolSchema = new mongoose.Schema(
       type: String,
       required: "category required",
       trim: true,
-      validate: function (nameVal) {
+      validate: async function (nameVal) {
         //to check that it exist in category : validate gonan take a promise to find the catergory true ken shih sinon false
-        return new Promise(function (resolve, reject) {
-          Category.findOne({ name: nameVal }, (err, cat) =>
-            resolve(cat ? true : false)
-          );
-        });
+        const cat = await Category.findOne({ name: nameVal });
+        if (cat) {
+          return true;
+        }
+        return false;
       },
     },
     brand: {

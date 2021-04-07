@@ -27,13 +27,22 @@ toolRouter.post(
         user.save();
         res.status(201).json(createdTool);
       } else {
-        res.status(401).end();
+        res.status(401).end("needs to be a supplier");
       }
     } catch (exception) {
       next(exception);
     }
   }
 );
+
+toolRouter.get("/:id", async (req, res, next) => {
+  try {
+    const tool = await Tool.findById(req.params.id);
+    res.json(tool);
+  } catch (exception) {
+    next(exception);
+  }
+});
 
 toolRouter.get("/", async (req, res, next) => {
   try {
@@ -48,10 +57,10 @@ toolRouter.get("/", async (req, res, next) => {
   }
 });
 
-toolRouter.get("/:id", async (req, res, next) => {
+toolRouter.delete("/:id", async (req, res, next) => {
   try {
-    const tool = await Tool.findById(req.params.id);
-    res.json(tool);
+    await Tool.findByIdAndRemove(req.params.id);
+    res.status(204).end();
   } catch (exception) {
     next(exception);
   }
@@ -63,7 +72,7 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
       return res.status(401).send("needs to be a client");
     }
     const toolsToRent = req.body;
-    //map transforom array
+
     const ids = toolsToRent.map((t) => t.id);
     const toolList = await Tool.find({ _id: { $in: ids } });
     const invalid = toolList.map((tool) => tool.state).includes("rented");
@@ -83,9 +92,9 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
           },
         });
       }
-      res.status(401).send("tools rented successfully");
+      res.send("tools rented successfully");
     } else {
-      res.send("some tools are unavailable");
+      res.status(400).send("some tools are unavailable");
     }
   } catch (exception) {
     //in the middleware we have error handleer

@@ -81,4 +81,17 @@ userRouter.put(
   }
 );
 
+userRouter.delete("/:id", async (req, res, next) => {
+  try {
+    if (req.params.id.toString() === req.loggedUser._id.toString()) {
+      await User.findByIdAndRemove(req.params.id);
+      res.status(204).end();
+    } else {
+      res.status(401).end();
+    }
+  } catch (exception) {
+    next(exception);
+  }
+});
+
 module.exports = userRouter;
