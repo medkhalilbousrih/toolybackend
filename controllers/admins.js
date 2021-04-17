@@ -30,7 +30,8 @@ adminRouter.post("/", middleware.userExtractor, async (req, res, next) => {
         lastName: data.lastName || "",
         passwordHash,
       });
-      const createdAdmin = await admin.save();
+      const createdAdmin = await admin.s;
+      ave();
       res.status(201).json(createdAdmin);
     }
   } catch (exception) {

@@ -3,6 +3,7 @@ const userRouter = require("express").Router();
 const bcrypt = require("bcrypt");
 const middleware = require("../utils/middleware");
 const upload = require("../utils/image-upload");
+const Tool = require("../models/tool");
 const fs = require("fs");
 
 userRouter.post("/", async (req, res, next) => {
@@ -81,9 +82,14 @@ userRouter.put(
   }
 );
 
-userRouter.delete("/:id", async (req, res, next) => {
+userRouter.delete("/:id", middleware.userExtractor, async (req, res, next) => {
   try {
     if (req.params.id.toString() === req.loggedUser._id.toString()) {
+      if (req.loggedUser.role === "supplier") {
+        for (let tool of req.loggedUser.tools) {
+          await Tool.findByIdAndRemove(tool);
+        }
+      }
       await User.findByIdAndRemove(req.params.id);
       res.status(204).end();
     } else {
