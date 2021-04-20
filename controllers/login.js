@@ -25,6 +25,7 @@ loginRouter.post("/", async (req, res, next) => {
       role: user.role,
       token: genToken,
       avatar: user.imageUrl,
+      tools: user.tools,
     });
   } catch (exception) {
     next(exception);

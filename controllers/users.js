@@ -52,6 +52,14 @@ userRouter.get("/:id", async (req, res) => {
   }
 });
 
+userRouter.get("/mydata", middleware.userExtractor, async (req, res) => {
+  try {
+    res.json(req.loggedUser);
+  } catch (exception) {
+    next(exception);
+  }
+});
+
 userRouter.put(
   "/",
   middleware.userExtractor,
