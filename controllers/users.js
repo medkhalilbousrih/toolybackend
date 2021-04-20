@@ -39,9 +39,10 @@ userRouter.post("/", async (req, res, next) => {
   }
 });
 
-userRouter.get("/mydata", middleware.userExtractor, (req, res, next) => {
+userRouter.get("/mydata", middleware.userExtractor, async (req, res, next) => {
   try {
-    res.json(req.loggedUser);
+    const info = await req.loggedUser.populate("tools");
+    res.json(info);
   } catch (exception) {
     next(exception);
   }
@@ -49,7 +50,7 @@ userRouter.get("/mydata", middleware.userExtractor, (req, res, next) => {
 
 userRouter.get("/:id", async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).populate("tools rented");
+    const user = await User.findById(req.params.id).populate("tools");
     if (user.role !== "admin") {
       res.json(user);
     } else {
