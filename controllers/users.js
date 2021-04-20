@@ -41,7 +41,7 @@ userRouter.post("/", async (req, res, next) => {
 
 userRouter.get("/mydata", middleware.userExtractor, async (req, res, next) => {
   try {
-    const info = await req.loggedUser.populate("tools");
+    const info = await Tool.find({ _id: { $in: req.loggedUser.tools } });
     res.json(info);
   } catch (exception) {
     next(exception);

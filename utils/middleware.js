@@ -1,4 +1,4 @@
-const Account = require("../models/user");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const errorHandler = (err, req, res, next) => {
@@ -17,7 +17,7 @@ const userExtractor = async (req, res, next) => {
       token = token.substring(7);
       decodedToken = jwt.verify(token, process.env.SECRET);
       //addding logged user to request data
-      req.loggedUser = await Account.findById(decodedToken.id);
+      req.loggedUser = await User.findById(decodedToken.id);
       next();
     } else {
       return res.status(500).send("invalid token");
