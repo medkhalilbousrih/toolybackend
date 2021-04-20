@@ -39,7 +39,15 @@ userRouter.post("/", async (req, res, next) => {
   }
 });
 
-userRouter.get("/:id", async (req, res) => {
+userRouter.get("/mydata", middleware.userExtractor, (req, res, next) => {
+  try {
+    res.json(req.loggedUser);
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+userRouter.get("/:id", async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id).populate("tools rented");
     if (user.role !== "admin") {
@@ -47,14 +55,6 @@ userRouter.get("/:id", async (req, res) => {
     } else {
       res.status(401).end();
     }
-  } catch (exception) {
-    next(exception);
-  }
-});
-
-userRouter.get("/mydata", middleware.userExtractor, async (req, res, next) => {
-  try {
-    res.json(req.loggedUser);
   } catch (exception) {
     next(exception);
   }
