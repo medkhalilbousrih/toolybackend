@@ -8,7 +8,7 @@ const middleware = require("./utils/middleware");
 const toolRouter = require("./controllers/tools");
 const adminRouter = require("./controllers/admins");
 const cors = require("cors");
-//app.use(express.static(path.join("build")));
+app.use(express.static("build"));
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
@@ -22,8 +22,6 @@ mongoose
   })
   .then((res) => console.log("connected to database"))
   .catch((err) => console.log(err));
-
-//el routage metna
 
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
