@@ -56,7 +56,7 @@ userRouter.get("/confirmation/:token", async (req, res, next) => {
 
 userRouter.get("/mydata", middleware.userExtractor, async (req, res, next) => {
   try {
-    const info = User.findById(req.loggedUser._id).populate("tools");
+    const info = await User.findById(req.loggedUser._id).populate("tools");
     res.json(info);
   } catch (exception) {
     next(exception);
