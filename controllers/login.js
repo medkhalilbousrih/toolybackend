@@ -13,6 +13,8 @@ loginRouter.post("/", async (req, res, next) => {
     );
     if (!user || !verifiedPassword) {
       return res.status(401).send("wrong username or password");
+    } else if (!user.verified) {
+      return res.status(401).send("Account not verified");
     }
     const tokenData = {
       id: user._id,

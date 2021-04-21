@@ -15,7 +15,7 @@ const userExtractor = async (req, res, next) => {
     // checking valid token
     if (token && token.startsWith("Bearer ")) {
       token = token.substring(7);
-      decodedToken = jwt.verify(token, process.env.SECRET);
+      const decodedToken = jwt.verify(token, process.env.SECRET);
       //addding logged user to request data
       req.loggedUser = await User.findById(decodedToken.id);
       next();

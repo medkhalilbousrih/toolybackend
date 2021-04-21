@@ -1,10 +1,13 @@
+const bcrypt = require("bcrypt");
+const fs = require("fs");
+const jwt = require("jsonwebtoken");
+
 const User = require("../models/user");
 const userRouter = require("express").Router();
-const bcrypt = require("bcrypt");
 const middleware = require("../utils/middleware");
 const upload = require("../utils/image-upload");
 const Tool = require("../models/tool");
-const fs = require("fs");
+const sendVerif = require("../utils/email-verification");
 
 userRouter.post("/", async (req, res, next) => {
   try {
@@ -34,6 +37,18 @@ userRouter.post("/", async (req, res, next) => {
 
     const createdUser = await user.save();
     res.status(201).json(createdUser);
+    await sendVerif(createdUser._id, createdUser.email);
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+userRouter.get("/confirmation/:token", async (req, res, next) => {
+  try {
+    const token = req.params.token;
+    const id = jwt.verify(token, process.env.SECRET).id;
+    await User.findByIdAndUpdate(id, { $set: { verified: true } });
+    res.status(200).end("Account Verified");
   } catch (exception) {
     next(exception);
   }
@@ -41,7 +56,7 @@ userRouter.post("/", async (req, res, next) => {
 
 userRouter.get("/mydata", middleware.userExtractor, async (req, res, next) => {
   try {
-    const info = await User.findById(req.loggedUser._id).populate("tools");
+    const info = User.findById(req.loggedUser._id).populate("tools");
     res.json(info);
   } catch (exception) {
     next(exception);

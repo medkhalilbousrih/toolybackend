@@ -58,6 +58,10 @@ const userSchema = new mongoose.Schema(
       },
     ],
     history: [{}],
+    verified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: {
