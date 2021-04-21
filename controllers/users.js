@@ -88,7 +88,7 @@ userRouter.put(
 
       const imgUrl = req.file ? `/uploads/${req.file.filename}` : user.imageUrl;
 
-      if (req.file && user.imageUrl !== "/uploads/avatar.png") {
+      if (req.file && user.imageUrl !== "/uploads/avatar.jpg") {
         fs.unlinkSync(`build${user.imageUrl}`);
       }
 
