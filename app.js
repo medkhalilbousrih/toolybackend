@@ -12,7 +12,7 @@ app.use(express.static("build"));
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
-
+//test
 mongoose
   .connect(process.env.MONGOURL, {
     useNewUrlParser: true,
