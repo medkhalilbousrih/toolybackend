@@ -7,7 +7,7 @@ loginRouter.post("/", async (req, res, next) => {
   try {
     const data = req.body;
     const user = await User.findOne({ username: data.username });
-    if (!username) {
+    if (!user) {
       return res.status(401).send("wrong username or password");
     }
     const verifiedPassword = await bcrypt.compare(
