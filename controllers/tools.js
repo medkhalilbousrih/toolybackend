@@ -2,6 +2,7 @@ const toolRouter = require("express").Router();
 const middleware = require("../utils/middleware");
 const Tool = require("../models/tool");
 const upload = require("../utils/image-upload");
+const User = require("../models/user");
 
 toolRouter.post(
   "/",
@@ -61,6 +62,11 @@ toolRouter.delete("/:id", middleware.userExtractor, async (req, res, next) => {
   try {
     const tool = await Tool.findById(req.params.id);
     if (tool.supplier.toString() === req.loggedUser._id.toString()) {
+      const supplier = await User.findById(req.loggedUser._id);
+      supplier.tools = supplier.tools.filter(
+        (t) => t.toString() !== req.params.id.toString()
+      );
+      supplier.save();
       await tool.remove();
       res.status(204).end();
     } else {

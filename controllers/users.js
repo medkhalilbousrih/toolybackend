@@ -106,20 +106,20 @@ userRouter.put(
   }
 );
 
-userRouter.delete("/:id", middleware.userExtractor, async (req, res, next) => {
-  try {
-    if (req.params.id.toString() === req.loggedUser._id.toString()) {
+userRouter.delete(
+  "/delete",
+  middleware.userExtractor,
+  async (req, res, next) => {
+    try {
       if (req.loggedUser.role === "supplier") {
         await Tool.deleteMany({ _id: { $in: req.loggedUser.tools } });
       }
-      await User.findByIdAndRemove(req.params.id);
+      await User.findByIdAndRemove(req.loggedUser._id);
       res.status(204).end();
-    } else {
-      res.status(401).end();
+    } catch (exception) {
+      next(exception);
     }
-  } catch (exception) {
-    next(exception);
   }
-});
+);
 
 module.exports = userRouter;

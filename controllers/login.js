@@ -7,6 +7,9 @@ loginRouter.post("/", async (req, res, next) => {
   try {
     const data = req.body;
     const user = await User.findOne({ username: data.username });
+    if (!username) {
+      return res.status(401).send("wrong username or password");
+    }
     const verifiedPassword = await bcrypt.compare(
       data.password,
       user.passwordHash
@@ -27,7 +30,6 @@ loginRouter.post("/", async (req, res, next) => {
       role: user.role,
       token: genToken,
       avatar: user.imageUrl,
-      tools: user.tools,
     });
   } catch (exception) {
     next(exception);
