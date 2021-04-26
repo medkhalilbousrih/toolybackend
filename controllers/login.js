@@ -26,6 +26,7 @@ loginRouter.post("/", async (req, res, next) => {
 
     const genToken = jwt.sign(tokenData, process.env.SECRET);
     res.json({
+      id: user._id,
       username: user.username,
       role: user.role,
       token: genToken,
