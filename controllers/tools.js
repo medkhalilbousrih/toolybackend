@@ -38,7 +38,7 @@ toolRouter.post(
 
 toolRouter.get("/:id", async (req, res, next) => {
   try {
-    const tool = await Tool.findById(req.params.id);
+    const tool = await Tool.findById(req.params.id).populate("supplier");
     res.json(tool);
   } catch (exception) {
     next(exception);
