@@ -76,6 +76,18 @@ userRouter.get("/:id", async (req, res, next) => {
   }
 });
 
+userRouter.put("/cart", middleware.userExtractor, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.loggedUser._id);
+    if (user.role === "client") {
+      user.cart = req.body;
+      await user.save();
+    }
+  } catch (exception) {
+    next(exception);
+  }
+});
+
 userRouter.put(
   "/",
   middleware.userExtractor,
