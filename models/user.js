@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     tools: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -57,11 +61,8 @@ const userSchema = new mongoose.Schema(
         ref: "Tool",
       },
     ],
+    cart: [],
     history: [{}],
-    verified: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     toJSON: {

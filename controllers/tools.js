@@ -99,6 +99,7 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
       const client = await User.findById(req.loggedUser._id);
       client.rented = client.rented.concat(info.id);
       await client.save();
+      await toolToRent.save();
       res.send("tool rented successfully");
     } else {
       res.status(400).send("some tools are unavailable");
