@@ -84,6 +84,7 @@ userRouter.put("/cart", middleware.userExtractor, async (req, res, next) => {
       await user.save();
       res.json("added to cart");
     }
+    res.end();
   } catch (exception) {
     next(exception);
   }
