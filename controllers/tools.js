@@ -38,7 +38,9 @@ toolRouter.post(
 
 toolRouter.get("/:id", async (req, res, next) => {
   try {
-    const tool = await Tool.findById(req.params.id).populate("supplier");
+    const tool = await Tool.findById(req.params.id).populate("supplier", {
+      tools: 0,
+    });
     res.json(tool);
   } catch (exception) {
     next(exception);
@@ -82,33 +84,26 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
     if (req.loggedUser.role !== "client") {
       return res.status(401).send("needs to be a client");
     }
-    const toolsToRent = req.body;
+    const info = req.body;
 
-    const ids = toolsToRent.map((t) => t.id);
-    const toolList = await Tool.find({ _id: { $in: ids } });
-    const invalid = toolList.map((tool) => tool.state).includes("rented");
+    const toolToRent = await Tool.findById(info.id);
+    const valid = toolToRent.state === "available";
 
-    if (!invalid) {
-      for (let tool of toolList) {
-        await Tool.findByIdAndUpdate(tool.id, {
-          $set: {
-            state: "rented",
-            rentDetails: {
-              from: new Date(),
-              to: toolsToRent.find(
-                (t) => t.id.toString() === tool._id.toString()
-              ).to,
-              client: req.loggedUser._id,
-            },
-          },
-        });
-      }
-      res.send("tools rented successfully");
+    if (valid) {
+      toolToRent.state = "rented";
+      toolToRent.rentDetails = {
+        from: new Date(),
+        to: info.to,
+        client: req.loggedUser._id,
+      };
+      const client = await User.findById(req.loggedUser._id);
+      client.rented = client.rented.concat(info.id);
+      await client.save();
+      res.send("tool rented successfully");
     } else {
       res.status(400).send("some tools are unavailable");
     }
   } catch (exception) {
-    //in the middleware we have error handleer
     next(exception);
   }
 });

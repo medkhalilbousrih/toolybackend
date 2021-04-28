@@ -70,6 +70,7 @@ const userSchema = new mongoose.Schema(
         delete newObj._id;
         delete newObj.__v;
         delete newObj.passwordHash;
+        delete newObj.verified;
       },
     },
   }
