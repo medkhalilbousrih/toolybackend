@@ -50,7 +50,7 @@ toolRouter.get("/:id", async (req, res, next) => {
 toolRouter.get("/", async (req, res, next) => {
   try {
     if (!req.query.category) {
-      const tools = await Tool.find({});
+      const tools = await Tool.find({}).populate("supplier", { tools: 0 });
       return res.json(tools);
     }
     const tools = await Tool.find({ category: req.query.category });
