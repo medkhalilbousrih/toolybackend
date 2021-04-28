@@ -82,6 +82,7 @@ userRouter.put("/cart", middleware.userExtractor, async (req, res, next) => {
     if (user.role === "client") {
       user.cart = req.body;
       await user.save();
+      res.json("added to cart");
     }
   } catch (exception) {
     next(exception);
