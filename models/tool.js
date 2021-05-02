@@ -51,6 +51,11 @@ const toolSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    tags: [
+      {
+        type: String,
+      },
+    ],
     rentDetails: {
       from: {
         type: Date,

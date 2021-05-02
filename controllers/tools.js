@@ -13,8 +13,8 @@ toolRouter.post(
       if (req.loggedUser.role === "supplier") {
         const data = req.body;
         const urls = req.files.map((f) => `/uploads/${f.filename}`);
-        const answ = await classify(urls[0]);
-        console.log(JSON.parse(answ).result.tags[0]);
+        const imagga = await classify(urls[0]);
+        const tags = JSON.parse(imagga).result.tags;
         const user = req.loggedUser;
         const tool = new Tool({
           name: data.name,
@@ -25,6 +25,7 @@ toolRouter.post(
           description: data.description,
           supplier: user._id,
           imageUrls: urls,
+          tags: [tags[0], tags[1], tags[2]],
         });
         const createdTool = await tool.save();
         user.tools = user.tools.concat(tool._id);
