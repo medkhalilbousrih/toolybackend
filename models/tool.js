@@ -36,6 +36,16 @@ const toolSchema = new mongoose.Schema(
       required: "state required",
       enum: ["rented", "available"],
     },
+    address: {
+      state: {
+        type: String,
+        default: "unknown",
+      },
+      city: {
+        type: String,
+        default: "unknown",
+      },
+    },
     description: {
       type: String,
       required: "description",

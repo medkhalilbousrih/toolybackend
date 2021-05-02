@@ -25,7 +25,7 @@ toolRouter.post(
           description: data.description,
           supplier: user._id,
           imageUrls: urls,
-          tags: [tags[0].tag.en, tags[1].tag.en, tags[2].tag.en],
+          tags: [tags[0].tag.en],
         });
         const createdTool = await tool.save();
         user.tools = user.tools.concat(tool._id);
