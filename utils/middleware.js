@@ -5,6 +5,7 @@ const errorHandler = (err, req, res, next) => {
   console.log(err.message);
   res.status(500).end(err.message);
 };
+
 const unknownEndpoint = (req, res) => {
   res.redirect("/");
 };
@@ -16,7 +17,7 @@ const userExtractor = async (req, res, next) => {
     if (token && token.startsWith("Bearer ")) {
       token = token.substring(7);
       const decodedToken = jwt.verify(token, process.env.SECRET);
-      //addding logged user to request data
+      //addding logged user to request object
       req.loggedUser = await User.findById(decodedToken.id);
       next();
     } else {

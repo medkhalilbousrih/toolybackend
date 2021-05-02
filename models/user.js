@@ -33,17 +33,26 @@ const userSchema = new mongoose.Schema(
       required: "no user role",
       enum: ["client", "supplier", "admin"],
     },
+    address: {
+      state: {
+        type: String,
+        default: "none",
+      },
+      city: {
+        type: String,
+        default: "none",
+      },
+      street: {
+        type: String,
+        default: "none",
+      },
+    },
+    birthday: {
+      type: Date,
+    },
     imageUrl: {
       type: String,
       default: "/uploads/avatar.jpg",
-    },
-    firstName: {
-      type: String,
-      trim: true,
-    },
-    lastName: {
-      type: String,
-      trim: true,
     },
     verified: {
       type: Boolean,
@@ -62,7 +71,6 @@ const userSchema = new mongoose.Schema(
       },
     ],
     cart: [],
-    history: [{}],
   },
   {
     toJSON: {

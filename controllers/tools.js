@@ -3,6 +3,7 @@ const middleware = require("../utils/middleware");
 const Tool = require("../models/tool");
 const upload = require("../utils/image-upload");
 const User = require("../models/user");
+const classify = require("../utils/image-classification");
 
 toolRouter.post(
   "/",
@@ -12,6 +13,8 @@ toolRouter.post(
       if (req.loggedUser.role === "supplier") {
         const data = req.body;
         const urls = req.files.map((f) => `/uploads/${f.filename}`);
+        const answ = await classify(urls[0]);
+        console.log(JSON.parse(answ).result.tags[0]);
         const user = req.loggedUser;
         const tool = new Tool({
           name: data.name,

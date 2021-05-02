@@ -2,7 +2,9 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 // async..await is not allowed in global scope, must use a wrapper
 const sendVerif = async (id, email) => {
+  //creating a token with an object that contains the id
   const token = jwt.sign({ id }, process.env.SECRET, { expiresIn: "1h" });
+
   let transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
