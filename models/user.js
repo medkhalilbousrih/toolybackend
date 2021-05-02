@@ -36,15 +36,15 @@ const userSchema = new mongoose.Schema(
     address: {
       state: {
         type: String,
-        default: "none",
+        default: "unknown",
       },
       city: {
         type: String,
-        default: "none",
+        default: "unknown",
       },
       street: {
         type: String,
-        default: "none",
+        default: "unknown",
       },
     },
     birthday: {
