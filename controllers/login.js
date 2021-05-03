@@ -15,7 +15,7 @@ loginRouter.post("/fb", async (req, res, next) => {
       let user = await User.findOne({ fbId: userID });
       if (!user) {
         user = new User({
-          email: req.body.email,
+          email: req.body.email || "noemailaddres@noemail.com",
           name: req.body.name,
           role: req.body.role,
           fbId: userID,
