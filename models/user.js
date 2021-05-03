@@ -12,20 +12,21 @@ const userSchema = new mongoose.Schema(
         "invalid email address",
       ],
     },
-    username: {
+    name: {
       type: String,
-      required: "username required",
-      unique: "username exists",
+      required: "name required",
       minlength: 3,
       trim: true,
     },
     passwordHash: {
       type: String,
-      required: true,
+    },
+    fbId: {
+      type: String,
+      unique: true,
     },
     phoneNumber: {
       type: String,
-      required: "phone number required",
       trim: true,
     },
     role: {

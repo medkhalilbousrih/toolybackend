@@ -30,10 +30,9 @@ userRouter.post("/", async (req, res, next) => {
 
     const user = new User({
       email: data.email,
-      username: data.username,
+      name: data.name,
       role: data.role,
       phoneNumber: data.phoneNumber,
-      address: data.address,
       passwordHash,
     });
 
@@ -115,7 +114,7 @@ userRouter.put(
         }
       }
 
-      user.email = data.email || user.email;
+      user.name = data.name || user.name;
       user.phoneNumber = data.phoneNumber || user.phoneNumber;
       user.imageUrl = imgUrl;
 
