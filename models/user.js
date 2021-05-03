@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema(
     },
     fbId: {
       type: String,
-      unique: true,
     },
     phoneNumber: {
       type: String,
