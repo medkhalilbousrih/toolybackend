@@ -8,13 +8,13 @@ const sendVerif = async (id, email) => {
   let transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "tooly.team@gmail.com",
-      pass: "toolyteam2020",
+      user: "toolyteam2021@gmail.com",
+      pass: "toolyteam2020$",
     },
   });
   // send mail with defined transport object
   await transporter.sendMail({
-    from: "tooly.team@gmail.com", // sender address
+    from: "toolyteam2021@gmail.com", // sender address
     to: `${email}`, // list of receivers
     subject: "Confirmation", // Subject line
     html: `Hi,
