@@ -25,7 +25,7 @@ const sendVerif = async (id, email) => {
     
     Click below to confirm your email address:
     
-    <a href="https://tooly-tn.herokuapp.com/api/users/confirmation/${token}">https://tooly-tn.herokuapp.com/api/users/confirmation</a>
+    <a href="http://localhost:3001/api/users/confirmation/${token}">https://tooly-tn.herokuapp.com/api/users/confirmation</a>
     
     If you have problems, please paste the above URL into your web browser.`, // html body
   });
