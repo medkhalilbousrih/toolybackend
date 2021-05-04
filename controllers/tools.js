@@ -25,6 +25,10 @@ toolRouter.post(
           description: data.description,
           supplier: user._id,
           imageUrls: urls,
+          address: {
+            state: data.state,
+            city: data.city,
+          },
           tags: [tags[0].tag.en],
         });
         const createdTool = await tool.save();
@@ -82,6 +86,38 @@ toolRouter.delete("/:id", middleware.userExtractor, async (req, res, next) => {
     next(exception);
   }
 });
+
+toolRouter.put(
+  "/update/:id",
+  [middleware.userExtractor, upload.array("toolImages", 5)],
+  async (req, res, next) => {
+    try {
+      const data = req.body;
+      const tool = Tool.findById(data.id);
+      if (req.loggedUser._id.toString() !== tool.supplier.toString()) {
+        return res.status(401).end();
+      }
+
+      tool.name = data.name || tool.name;
+      tool.brand = data.brand || tool.brand;
+      tool.categoy = data.category || tool.category;
+      tool.price = data.price || tool.price;
+      tool.description = data.description || tool.description;
+      if (req.files) {
+        const urls = req.files.map((f) => `/uploads/${f.filename}`);
+        const imagga = await classify(urls[0]);
+        const tags = JSON.parse(imagga).result.tags;
+        tool.imageUrls = urls;
+        tool.tags = [tags[0].tag.en];
+      }
+
+      await tool.save();
+      res.status(200).end();
+    } catch (exception) {
+      next(exception);
+    }
+  }
+);
 
 toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
   try {
