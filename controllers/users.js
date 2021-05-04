@@ -35,11 +35,10 @@ userRouter.post("/", async (req, res, next) => {
       phoneNumber: data.phoneNumber,
       passwordHash,
     });
-
-    const createdUser = await user.save();
-    res.status(201).json(createdUser);
     //sending verification email
     await sendVerif(createdUser._id, createdUser.email);
+    const createdUser = await user.save();
+    res.status(201).json(createdUser);
   } catch (exception) {
     next(exception);
   }
