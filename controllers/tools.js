@@ -93,7 +93,7 @@ toolRouter.put(
   async (req, res, next) => {
     try {
       const data = req.body;
-      const tool = await Tool.findById(data.id);
+      const tool = await Tool.findById(req.params.id);
       if (req.loggedUser._id.toString() !== tool.supplier.toString()) {
         return res.status(401).end();
       }
