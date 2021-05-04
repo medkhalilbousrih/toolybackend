@@ -36,7 +36,7 @@ userRouter.post("/", async (req, res, next) => {
       passwordHash,
     });
     //sending verification email
-    await sendVerif(createdUser._id, createdUser.email);
+    await sendVerif(user._id, user.email);
     const createdUser = await user.save();
     res.status(201).json(createdUser);
   } catch (exception) {
