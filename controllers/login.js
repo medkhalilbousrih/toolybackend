@@ -24,8 +24,6 @@ loginRouter.post("/fb", async (req, res, next) => {
         });
         await user.save();
       }
-      user.imageUrl = req.body.picture.data.url;
-      await user.save();
       const tokenData = {
         id: user._id,
         email: user.email,
