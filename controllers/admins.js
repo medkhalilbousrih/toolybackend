@@ -23,15 +23,12 @@ adminRouter.post("/", middleware.userExtractor, async (req, res, next) => {
       const passwordHash = await bcrypt.hash(data.password, 10);
       const admin = new User({
         email: data.email,
-        username: data.username,
+        name: data.name,
         role: "admin",
         phoneNumber: data.phoneNumber,
-        firstName: data.firstName || "",
-        lastName: data.lastName || "",
         passwordHash,
       });
-      const createdAdmin = await admin.s;
-      ave();
+      const createdAdmin = await admin.save();
       res.status(201).json(createdAdmin);
     }
   } catch (exception) {
@@ -40,10 +37,8 @@ adminRouter.post("/", middleware.userExtractor, async (req, res, next) => {
 });
 
 adminRouter.delete("/:id", middleware.userExtractor, async (req, res) => {
-  if (req.loggedUser.role === "admin") {
-    await User.findByIdAndRemove(req.params.id);
-    res.status(204).send("user deleted");
-  }
+  await User.findByIdAndRemove(req.params.id);
+  res.status(204).send("user deleted");
 });
 
 module.exports = adminRouter;
