@@ -11,7 +11,7 @@ loginRouter.post("/fb", async (req, res, next) => {
     const fbUser = await axios.get(
       `https://graph.facebook.com/v2.3/me?access_token=${accessToken}&method=get&pretty=0&sdk=joey&suppress_http_code=1`
     );
-    if (userID === fbUser.data.id) {
+    if (userID === fbUser.data.id && userID) {
       let user = await User.findOne({ fbId: userID });
       if (!user) {
         user = new User({
