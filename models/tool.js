@@ -79,8 +79,14 @@ const toolSchema = new mongoose.Schema(
       },
     },
     rating: {
-      value: Number,
-      total: Number,
+      value: {
+        type: Number,
+        default: 0,
+      },
+      total: {
+        type: Number,
+        default: 0,
+      },
     },
   },
   {

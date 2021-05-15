@@ -172,6 +172,7 @@ toolRouter.put(
       );
       res.status(200).end();
     } catch (exception) {
+      console.log(exception);
       next(exception);
     }
   }
