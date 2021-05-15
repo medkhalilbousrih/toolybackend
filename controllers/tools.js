@@ -149,4 +149,32 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
   }
 });
 
+toolRouter.put(
+  "/rate/:id",
+  middleware.userExtractor,
+  async (req, res, next) => {
+    try {
+      if (
+        req.body.rating > 5 ||
+        !req.loggedUser.rented.includes(req.params.id)
+      ) {
+        return res.status(400).end();
+      }
+      await Tool.findByIdAndUpdate(
+        req.params.id,
+        {
+          $inc: {
+            "rating.value": req.body.rating,
+            "rating.total": 1,
+          },
+        },
+        { new: true, runValidators: true, context: "query" }
+      );
+      res.status(200).end();
+    } catch (exception) {
+      next(exception);
+    }
+  }
+);
+
 module.exports = toolRouter;

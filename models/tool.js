@@ -78,6 +78,10 @@ const toolSchema = new mongoose.Schema(
         ref: "User",
       },
     },
+    rating: {
+      value: Number,
+      total: Number,
+    },
   },
   {
     toJSON: {
