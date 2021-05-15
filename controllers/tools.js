@@ -134,6 +134,7 @@ toolRouter.put("/rent", middleware.userExtractor, async (req, res, next) => {
       toolToRent.rentDetails = {
         from: new Date(),
         to: info.to,
+        total: info.total,
         client: req.loggedUser._id,
       };
       const client = await User.findById(req.loggedUser._id);

@@ -77,6 +77,9 @@ const toolSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
+      total: {
+        type: Number,
+      },
     },
     rating: {
       value: {
