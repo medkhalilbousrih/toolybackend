@@ -16,6 +16,13 @@ adminRouter.post("/category", middleware.userExtractor, async (req, res) => {
   }
 });
 
+adminRouter.get("/users", middleware.userExtractor, async (req, res) => {
+  if (req.loggedUser.role === "admin") {
+    const users = await User.find({});
+    res.json(users);
+  }
+});
+
 adminRouter.post("/", middleware.userExtractor, async (req, res, next) => {
   try {
     if (req.loggedUser.role === "admin") {
