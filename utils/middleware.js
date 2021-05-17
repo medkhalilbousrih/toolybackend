@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
 };
 
 const unknownEndpoint = (req, res) => {
-  res.redirect("/");
+  res.status(404).end();
 };
 
 const userExtractor = async (req, res, next) => {

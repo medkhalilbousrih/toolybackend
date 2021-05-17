@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
@@ -31,6 +32,10 @@ app.use("/api/login", loginRouter);
 app.use("/api/tools", toolRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/categories", categoryRouter);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
