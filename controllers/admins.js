@@ -3,7 +3,7 @@ const adminRouter = require("express").Router();
 const middleware = require("../utils/middleware");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-
+//aa
 adminRouter.post("/category", middleware.userExtractor, async (req, res) => {
   if (req.loggedUser.role === "admin") {
     const data = req.body;
